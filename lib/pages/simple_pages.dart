@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'package:provider/provider.dart';
+
+import '../state/app_state.dart';
 import '../theme/app_theme.dart';
 import '../widgets/common.dart';
+import 'feedback_page.dart';
+import 'my_profile_page.dart';
+import 'service_page.dart';
 
 LinearGradient placeholderGradientFor(String seed) => placeholderGradient(seed);
 
@@ -66,7 +72,9 @@ class MePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final p = context.p;
+    final state = context.watch<AppState>();
+    final p = state.palette;
+    final me = state.profile;
     return Container(
       color: p.bg,
       child: SingleChildScrollView(
@@ -86,13 +94,13 @@ class MePage extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const SeedAvatar(seed: 'me', size: 64, label: 'M'),
+                        SeedAvatar(seed: me.avatar.isEmpty ? 'me' : me.avatar, size: 64, label: me.name, ring: me.gender == 'f' ? p.pink : p.sky),
                         const SizedBox(width: 14),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('我的昵称',
+                              Text(me.name,
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w700,
@@ -100,9 +108,9 @@ class MePage extends StatelessWidget {
                               const SizedBox(height: 6),
                               Row(
                                 children: [
-                                  _pill(p, 'ID 800123'),
+                                  _pill(p, 'ID ${me.uid}'),
                                   const SizedBox(width: 6),
-                                  _pill(p, 'IP 吉隆坡'),
+                                  _pill(p, 'IP ${me.ip}'),
                                 ],
                               ),
                             ],
@@ -113,9 +121,9 @@ class MePage extends StatelessWidget {
                     const SizedBox(height: 20),
                     Row(
                       children: [
-                        _stat(p, '我关注的', 12),
-                        _stat(p, '我的粉丝', 8),
-                        _stat(p, '我的获赞', 36),
+                        _stat(p, '我关注的', me.following.length),
+                        _stat(p, '我的粉丝', me.followers.length),
+                        _stat(p, '我的获赞', me.likes),
                       ],
                     ),
                   ],
@@ -137,7 +145,9 @@ class MePage extends StatelessWidget {
                       child: GestureDetector(
                         onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                                builder: (_) => SimplePage(title: t.$1))),
+                                builder: (_) => t.$1 == '我的主页'
+                                    ? const MyProfilePage()
+                                    : SimplePage(title: t.$1))),
                         child: Column(
                           children: [
                             Container(
@@ -179,14 +189,36 @@ class MePage extends StatelessWidget {
                       leading: Icon(item.$2, color: p.inkMuted, size: 20),
                       title: Text(item.$1,
                           style: TextStyle(fontSize: 14, color: p.ink)),
-                      trailing:
-                          Icon(Icons.chevron_right_rounded, color: p.inkSubtle),
+                      trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                        if (item.$1 == '反馈信息' && state.unread.feedback > 0)
+                          CountBadge(count: state.unread.feedback, borderColor: p.surface),
+                        if (item.$1 == '在线客服' && state.unread.service > 0)
+                          CountBadge(count: state.unread.service, borderColor: p.surface),
+                        const SizedBox(width: 4),
+                        Icon(Icons.chevron_right_rounded, color: p.inkSubtle),
+                      ]),
                       shape: i == 4
                           ? null
                           : Border(bottom: BorderSide(color: p.divider)),
-                      onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (_) => SimplePage(title: item.$1))),
+                      onTap: () {
+                        switch (item.$1) {
+                          case '反馈信息':
+                            state.clearUnread('feedback');
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (_) => const FeedbackPage()));
+                          case '在线客服':
+                            state.clearUnread('service');
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (_) => const ServicePage()));
+                          case '清除缓存':
+                            showToast(context, '缓存已清除');
+                          case '在线更新':
+                            showToast(context, '当前已是最新版本 1.0.0');
+                          default:
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (_) => SimplePage(title: item.$1)));
+                        }
+                      },
                     ),
                 ],
               ),

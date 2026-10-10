@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'pages/home_page.dart';
+import 'pages/publish_page.dart';
 import 'pages/simple_pages.dart';
 import 'state/app_state.dart';
 import 'widgets/common.dart';
@@ -111,7 +112,7 @@ class BottomNav extends StatelessWidget {
                   onTap: () {
                     Navigator.pop(ctx);
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => const SimplePage(title: '圈子发布')));
+                        builder: (_) => const PublishPage(kind: PublishKind.circle)));
                   },
                 ),
                 _PublishBtn(
@@ -121,7 +122,7 @@ class BottomNav extends StatelessWidget {
                   onTap: () {
                     Navigator.pop(ctx);
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => const SimplePage(title: '论坛发布')));
+                        builder: (_) => const PublishPage(kind: PublishKind.forum)));
                   },
                 ),
               ],

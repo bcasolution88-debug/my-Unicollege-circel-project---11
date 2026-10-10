@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/mock_data.dart';
 import '../widgets/common.dart';
+import '../widgets/posts_list.dart';
 import 'circle_tab.dart';
 import 'simple_pages.dart';
 
@@ -31,8 +32,7 @@ class _ForumTabState extends State<ForumTab> {
             padding: const EdgeInsets.fromLTRB(14, 14, 14, 30),
             child: switch (_sub) {
               0 => _topics(context, p),
-              1 => const EmptyHint(
-                  icon: Icons.forum_outlined, text: '暂无论坛帖子，去发布第一条吧'),
+              1 => const PostsList(type: 'forum'),
               _ => const EmptyHint(
                   icon: Icons.bookmark_border_rounded, text: '还没有收藏的话题'),
             },

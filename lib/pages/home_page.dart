@@ -9,6 +9,8 @@ import '../widgets/events_signup_list.dart';
 import 'circle_tab.dart';
 import 'events_page.dart';
 import 'forum_tab.dart';
+import 'messages_page.dart';
+import 'service_page.dart';
 import 'simple_pages.dart';
 
 /// 01 Home — top segmented tabs + content + right FAB.
@@ -211,7 +213,7 @@ class HomeTopBar extends StatelessWidget {
               onTap: () {
                 context.read<AppState>().clearServiceUnread();
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => const SimplePage(title: '客服中心')));
+                    builder: (_) => const ServicePage()));
               },
             ),
             _IconBtn(
@@ -437,9 +439,8 @@ class _FeatureGrid extends StatelessWidget {
             .push(MaterialPageRoute(builder: (_) => const EventsPage()));
         break;
       case 'messages':
-        context.read<AppState>().clearMsgUnread();
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => const SimplePage(title: '消息信息')));
+            builder: (_) => const MessagesPage()));
         break;
       default:
         final it = kFeatures.firstWhere((f) => f.id == id);

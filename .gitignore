@@ -46,3 +46,8 @@ app.*.map.json
 
 build.log
 server.log
+
+backend/data/
+backend/server.log
+build_web.log
+build_apk.log

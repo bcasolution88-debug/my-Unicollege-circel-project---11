@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/mock_data.dart';
 import '../widgets/common.dart';
+import '../widgets/posts_list.dart';
 import 'simple_pages.dart';
 
 /// 圈子 tab — sub tabs 圈子社区 · 帖子列表 · 我的收藏
@@ -30,8 +31,7 @@ class _CircleTabState extends State<CircleTab> {
             padding: const EdgeInsets.fromLTRB(14, 14, 14, 30),
             child: switch (_sub) {
               0 => _buildMain(context, p),
-              1 => const EmptyHint(
-                  icon: Icons.article_outlined, text: '暂无圈子帖子，去发布第一条吧'),
+              1 => const PostsList(type: 'circle'),
               _ => const EmptyHint(
                   icon: Icons.bookmark_border_rounded, text: '还没有收藏的帖子'),
             },
